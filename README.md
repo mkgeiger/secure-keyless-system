@@ -10,7 +10,11 @@ Please understand this project as an experiment and feel free to improve and ext
 
 ## Components
 
-### Raspberry Pi Zero
+### Raspberry Pi Zero W
+
+Any board or PC can be used as the  `keyless server`, which is able to run the Python server script. If it is a headless system it is useful to activate SSH to be able to connect to the board in a secure way for configuration, up- and downloading files, maintenance, etc. I'm using the Raspberry Pi Zero W for the `keyless server` with the Raspberry Pi OS installed. Python version 3.x is required.
+
+<img src="/KeylessServer/Hardware/RaspberryPI_ZeroW.png" alt="Raspberry PI Zero W" width="1024"/>
 
 ### Microcontroller
 
