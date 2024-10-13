@@ -14,9 +14,13 @@ Please understand this project as an experiment and feel free to improve and ext
 
 Any board or PC can be used as the  `keyless server`, which is able to run the Python server script. If it is a headless system it is useful to activate SSH to be able to connect to the board in a secure way for configuration, up- and downloading files, maintenance, etc. I'm using the Raspberry Pi Zero W for the `keyless server` with the Raspberry Pi OS installed. Python version 3.x is required.
 
-<img src="/KeylessServer/Hardware/RaspberryPI_ZeroW.png" alt="Raspberry PI Zero W" width="1024"/>
+<img src="/KeylessServer/Hardware/RaspberryPI_ZeroW.png" alt="Raspberry PI Zero W" width="512"/>
 
 ### Microcontroller
+
+I decided to use an ESP-12F ESP8266 Wi-Fi module for the `keyless client`. It has a small form factor, enough CPU performance, all the required pins needed for this project, and most important no wakeup problems from deep sleep like many other ESP8266 boards had which I tested. The ESP-12F can be ordered with a white breakout PCB which can be seen in the following picture. The breakout board has already resistors mounted to pull LOW the GPIO15 pin and pull HIGH the Chip-Enable pin.
+
+<img src="/KeylessClient/Hardware/ESP8266.png" alt="ESP8266" width="512"/>
 
 ### High-End Security Controller
 
