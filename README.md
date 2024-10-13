@@ -18,11 +18,15 @@ Any board or PC can be used as the  `keyless server`, which is able to run the P
 
 ### Microcontroller
 
-I decided to use an ESP-12F ESP8266 Wi-Fi module for the `keyless client`. It has a small form factor, enough CPU performance, all the required pins needed for this project, and most important no wakeup problems from deep sleep like many other ESP8266 boards had which I tested. The ESP-12F can be ordered with a white breakout PCB which can be seen in the following picture. The breakout board has already resistors mounted to pull LOW the GPIO15 pin and pull HIGH the Chip-Enable pin.
+I decided to use an ESP-12F ESP8266 Wi-Fi module from Adafruit Industries for the `keyless client`. It has a small form factor, enough CPU performance, all the required pins needed for this project, and most important no wakeup problems from deep sleep like many other ESP8266 boards had which I tested. The ESP-12F can be ordered with a white breakout PCB which can be seen in the following picture. The breakout board has already resistors mounted to pull LOW the GPIO15 pin and pull HIGH the Chip-Enable pin.
 
 <img src="/KeylessClient/Hardware/ESP8266.png" alt="ESP8266" width="512"/>
 
 ### High-End Security Controller
+
+There don't exist many standalone security controllers on the market. Often they are integrated only into high-end microcontollers. The standalone Optiga Trust M SLS32AIA chip from Infineon Technolgies was the best choice because of its well supported and easy to use software library. The asymetric cryptographic method RSA-2048 is perfectly supported including a secure private keystore. The chip comes on a breakout board from Adafruit Industries with pins for I²C.
+
+<img src="/KeylessClient/Hardware/TrustM.png" alt="ESP8266" width="384"/>
 
 ### 3.3V Step-Up Voltage Regulator
 
