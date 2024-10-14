@@ -24,7 +24,7 @@ I decided to use an ESP-12F ESP8266 Wi-Fi module from Adafruit Industries for th
 
 ### High-End Security Controller
 
-There don't exist many standalone security controllers on the market. Often they are integrated only into high-end microcontollers. The standalone Optiga Trust M SLS32AIA chip from Infineon Technolgies was the best choice because of its well supported and easy to use software library. The asymetric cryptographic method RSA-2048 is perfectly supported including a secure private keystore. The chip comes on a breakout board from Adafruit Industries with pins for I²C.
+There don't exist many standalone security controllers on the market. Often they are integrated only into high-end microcontollers. The standalone Optiga Trust M SLS32AIA chip from Infineon Technolgies was the best choice because of its well supported and easy to use software library. The asymetric cryptographic method RSA-2048 is perfectly supported including a secure private keystore. The chip comes on a breakout board from Adafruit Industries with pins for I²C. Pull-up resistors for the I²C lines SCL and SDA are already installed on the breakout board.
 
 <img src="/KeylessClient/Hardware/TrustM.png" alt="ESP8266" width="384"/>
 
@@ -42,6 +42,10 @@ As the `keyless client` is built only with a naked ESP-12F and without a USB chi
 <img src="/KeylessClient/Hardware/FTDI-UM232R.png" alt="FTDI-UM232R" width="384"/>
 
 ## Schematic
+
+On the right side the pin header can be seen to connect to the UM232R module for flashing. Two additional 10 kOhm resistors are needed to pull HIGH the GPIO0 (flash/normal boot mode) and to pull HIGH the reset pin. The jumper on the left side connected to GPIO14 is responsible to select either the file transfer mode (jumper opened, with FTP client, without deep sleep) or the normal operation mode (jumper closed, without FTP client, with deep sleep). The push button wakes-up the ESP-12F from deep sleep. The Optiga Trust M is not powered permanently, instead, to keep the power consumption at a minimum during deep sleep, it is powered through the GPIO13 of the ESP-12F. The current consumption of the Optiga Trust M needs to be limited to 12 mA, because this current is the maximum what a single GPIO of the ESP-12F can deliver. There is also a possibility to reset the Optiga Trust M with GPIO12.
+
+<img src="/KeylessClient/Hardware/Schematic.png" alt="Schematic" width="1024"/>
 
 # Software
 
