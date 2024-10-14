@@ -30,6 +30,11 @@ There don't exist many standalone security controllers on the market. Often they
 
 ### 3.3V Step-Up Voltage Regulator
 
+The Pololu 3.3V step-up voltage regulator U1V10F3 is perfectly suited for powering with two alkaline cells. The module is equipped with Texas Instruments' TPS61201 low-input synchronous boost converter.
+The small form factor, thehigh input voltage range down to 0.5V and the low quiescent current of ~50µA makes it perfectly suited for the `keyless client`.
+
+<img src="/KeylessClient/Hardware/U1V10F3.png" alt="U1V10F3" width="150"/>
+
 ### USB – Serial UART (TTL) Development Module
 
 ## Schematic
