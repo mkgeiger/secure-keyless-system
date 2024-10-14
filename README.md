@@ -37,6 +37,10 @@ The small form factor, thehigh input voltage range down to 0.5V and the low quie
 
 ### USB – Serial UART (TTL) Development Module
 
+As the `keyless client` is built only with a naked ESP-12F and without a USB chip for SW flashing its UART needs to be contacted directly. Apart from RXD and TXD also RTS (Request To Send) and DTR (Data Terminal Ready) signals are required to connect. These two additional pins are not brought out on most USB – Serial UART (TTL) converter boards. The UM232R development module provides access to all UART interface pins of the FTDI FT232R unit, which can also be configured for 3.3V levels via a jumper setting.
+ 
+<img src="/KeylessClient/Hardware/FTDI-UM232R.png" alt="FTDI-UM232R" width="384"/>
+
 ## Schematic
 
 # Software
