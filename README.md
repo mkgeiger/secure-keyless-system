@@ -65,7 +65,39 @@ The client public key, which is embedded into the client certificate, is used la
 
 ### Certification Sequence
 
+_Note: OpenSSL 3.2.0 has been used for following steps._
+
+1. As you are your own Certificate Authority (CA) you create first your CA key pair. Make sure this CA key is stored secure that it cannot be stolen.
+```
+sudo openssl genrsa -out ca.key 2048
+```
+2. Now create a self-signed certificate for the CA using the CA key. Enter your personal attributes into the requested form fields of the CA certificate generation.
+```
+sudo openssl req -new -x509 -days 15000 -key ca.key -out ca.crt
+```
+3. Hand out the CA certificate to the `keyless server` and store it in the same folder as the Python script `KeylessServer.py`.
+4. Start the `keyless client` in FTP mode (jumper opened) and connect with a FTP server to it (IP adress is printed on the serial console) from the Certificate Authority (CA). Make sure that the client certificate (key.crt) and the client CSR (key.csr) are deleted from the client file-system.
+5. Start the `keyless client` in normal mode (jumper closed). A new client key pair is generated inside the Optiga Trust M and the client CSR is generated automatically and stored as the file key.csr in the client file-system. The form attributes of the CSR are hard coded inside the source code of the `keyless client` and need to be adapted by its owner.
+6. Start the `keyless client` in FTP mode (jumper opened) again and connect with a FTP server to it from the Certificate Authority (CA). Upload the client CSR (key.csr) to the Certificate Authority (CA).
+7. Now create from the client CSR (key.csr) the client certificate (key.crt) signed with the CA key. The valid period in the following example is 1 year. The options.ext file can be found [here](https://github.com/mkgeiger/secure-keyless-system/CertificateAuthority/options.ext).
+```
+sudo openssl x509 -req -inform der -in key.csr -CA ca.crt -CAkey ca.key -CAcreateserial -extfile options.ext -outform der -out key.crt -days 365
+```
+8. Now download the client certificate (key.crt) to the `keyless client` via FTP.
+9. Start the `keyless client` in normal mode (jumper closed) again and restart also the `keyless server`. The certification process is finished now.
+
+_Note: whenever you need to re-generate the client key/certificate you need to repeat only steps 4 to 9._ 
+
 <img src="/Diagrams/CertificationProcess.png" alt="Chain Of Trust" width="1024"/>
+
+Some other useful OpenSSL commands to verify and dump the client CSR/certificate:
+```
+sudo openssl req -inform der -in key.csr -noout -verify
+sudo openssl asn1parse -inform der -in key.csr
+sudo openssl req -inform der -in key.csr -noout -text
+sudo openssl verify -CAfile ca.crt key.crt
+sudo openssl x509 -in key.crt -noout -text
+```
 
 ## Keyless System
 
