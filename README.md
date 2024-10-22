@@ -112,4 +112,14 @@ The message exchange of the `Keyless System` is based on the Challenge Response 
 
 ### Keyless Client
 
+* install Arduino IDE 2.x
+* enter "https://arduino.esp8266.com/stable/package_esp8266com_index.json" into the File>Preferences>Additional Boards Manager URLs field
+* open boards manager from Tools>Board menu and install the esp8266 platform
+* install library "SimpleFTPServer" v2.1.7 or newer
+* install library "OPTIGA Trust M" v1.1.0. The included Mbed TLS stack is very old and buggy. So very important is the patching of file ~\Arduino\libraries\OPTIGA_Trust_M\src\mbedtls\asn1write.c with my [asn1write.c](/KeylessClient/Patch/asn1write.c). It contains several bugfixes based on Mbed TLS 3.6.0 LTS related to ASN.1 tag handling.
+* select board: NodeMCU 1.0 (ESP-12E Module)
+* select flash size with filesystem space: 4MB (FS:1MB or 2MB)
+* the CSR handling is located in files [csr.h](/KeylessClient/csr.h) and [csr.cpp](/KeylessClient/csr.cpp)
+* the main functionality is located in file [KeylessClient.ino](/KeylessClient/KeylessClient.ino)
+
 ### Keyless Server
