@@ -101,6 +101,15 @@ sudo openssl x509 -in key.crt -noout -text
 
 ## Keyless System
 
+The message exchange of the `Keyless System` is based on the Challenge Response Authentication mechanism.
+
+1. When the `Keyless Client` wakes up from deep sleep a request is sent to the `Keyless Server`. Along with the request the client certificate is sent for different kind of certificate verifications, e.g. chain of trust, time expiration, etc.
+2. The challenge is sent by the `Keyless Server` to the `Keyless Client` containing a nonce. In our case the nonce is the secure hash (SHA256) of the combination of a large random number and a sequence number. The sequence number is a monotonic up-counter, which makes it safe against replay attacks.
+3. The response is the RSASSA-PKCS1-v1.5 signature of the nonce calculated by `Keyless Client` and sent to the `Keyless Server`.
+4. The `Keyless Server` verifies the signature with the client public key (received with the ckient certificate) and on success the door is unlocked. The `Keyless Client` will be informed if access has been granted.
+
+<img src="/Diagrams/ChallengeResponseAuthentication.png" alt="Challenge Response Authentication" width="1024"/>
+
 ### Keyless Client
 
 ### Keyless Server
