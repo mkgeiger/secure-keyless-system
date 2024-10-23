@@ -2,7 +2,7 @@
 
 If you want to develop a wireless keyless system yourself that consists of a remote control for locking and unlocking doors with a high level of security, then you are on the right page.
 
-The handheld remote control is hereinafter referred to as the `keyless client`, whereby the controller that is responsible for locking and unlocking the locking cylinder is hereinafter referred to as the `keyless server`. The system uses inexpensive and widely available electronic components that you can order from your local electronics retailer. The wireless medium used for communication is Wi-Fi, either the Wi-Fi of your existing home network or the Wi-Fi of an access point running on the `keyless server`. The security of the sytem is based on the asymetric cryptographic method RSA-2048, which implements a challenge-response authentication algorithm between the `keyless client` and the `keyless server`.
+The handheld remote control is hereinafter referred to as the `keyless client`, whereby the controller that is responsible for locking and unlocking the locking cylinder is hereinafter referred to as the `keyless server`. The system uses inexpensive and widely available electronic components that you can order from your local electronics retailer. The wireless medium used for communication is Wi-Fi, either the Wi-Fi of your existing home network or the Wi-Fi of an access point running on the `keyless server`. The security of the system is based on the asymmetric cryptographic method RSA-2048, which implements a challenge-response authentication algorithm between the `keyless client` and the `keyless server`.
 
 Please understand this project as an experiment and feel free to improve and extend it to your own needs. It is fully working but neither completely penetration tested nor measures were taken to prevent all kind of side channel attacks. The reproduction is therefore at your own risk. I assume no liability whatsoever.
 
@@ -12,7 +12,7 @@ Please understand this project as an experiment and feel free to improve and ext
 
 ### Raspberry Pi Zero W
 
-Any board or PC can be used as the  `keyless server`, which is able to run the Python server script. If it is a headless system it is useful to activate SSH to be able to connect to the board in a secure way for configuration, up- and downloading files, maintenance, etc. I'm using the Raspberry Pi Zero W for the `keyless server` with the Raspberry Pi OS installed. Python version 3.x is required.
+Any board or PC can be used as the `keyless server`, which is able to run the Python server script. If it is a headless system it is useful to activate SSH to be able to connect to the board in a secure way for configuration, up- and downloading files, maintenance, etc. I'm using the Raspberry Pi Zero W for the `keyless server` with the Raspberry Pi OS installed. Python version 3.7.x or newer is required.
 
 <img src="/KeylessServer/Hardware/RaspberryPI_ZeroW.png" alt="Raspberry PI Zero W" width="512"/>
 
@@ -24,20 +24,20 @@ I decided to use an ESP-12F ESP8266 Wi-Fi module from Adafruit Industries for th
 
 ### High-End Security Controller
 
-There don't exist many standalone security controllers on the market. Often they are integrated only into high-end microcontollers. The standalone Optiga Trust M SLS32AIA chip from Infineon Technolgies was the best choice because of its well supported and easy to use software library. The asymetric cryptographic method RSA-2048 is perfectly supported including a secure private keystore. The chip comes on a breakout board from Adafruit Industries with pins for I²C. Pull-up resistors for the I²C lines SCL and SDA are already installed on the breakout board.
+There don't exist many standalone security controllers on the market. Often they are integrated only into high-end microcontollers. The standalone Optiga Trust M SLS32AIA chip from Infineon Technolgies was the best choice because of its well supported and easy to use Arduino software library. The asymmetric cryptographic method RSA-2048 is perfectly supported including a secure private keystore. The chip comes on a breakout board from Adafruit Industries with pins for I²C. Pull-up resistors for the I²C lines SCL and SDA are already installed on the breakout board.
 
 <img src="/KeylessClient/Hardware/TrustM.png" alt="ESP8266" width="384"/>
 
 ### 3.3V Step-Up Voltage Regulator
 
 The Pololu 3.3V step-up voltage regulator U1V10F3 is perfectly suited for powering with two alkaline cells. The module is equipped with Texas Instruments' TPS61201 low-input synchronous boost converter.
-The small form factor, thehigh input voltage range down to 0.5V and the low quiescent current of ~50µA makes it perfectly suited for the `keyless client`.
+The small form factor, the high input voltage range down to 0.5V and the low quiescent current of ~50µA makes it perfectly suited for the `keyless client`.
 
 <img src="/KeylessClient/Hardware/U1V10F3.png" alt="U1V10F3" width="150"/>
 
 ### USB – Serial UART (TTL) Development Module
 
-As the `keyless client` is built only with a naked ESP-12F and without a USB chip for SW flashing its UART needs to be contacted directly. Apart from RXD and TXD also RTS (Request To Send) and DTR (Data Terminal Ready) signals are required to connect. These two additional pins are not brought out on most USB – Serial UART (TTL) converter boards. The UM232R development module provides access to all UART interface pins of the FTDI FT232R unit, which can also be configured for 3.3V levels via a jumper setting.
+As the `keyless client` is built only with a naked ESP-12F and without a USB chip for SW flashing and its UART needs to be contacted directly. Apart from RXD and TXD also RTS (Request To Send) and DTR (Data Terminal Ready) signals are required to connect. These two additional pins are not brought out on most USB – Serial UART (TTL) converter boards. The UM232R development module provides access to all UART interface pins of the FTDI FT232R unit, which can also be configured for 3.3V levels via a jumper setting.
  
 <img src="/KeylessClient/Hardware/FTDI-UM232R.png" alt="FTDI-UM232R" width="384"/>
 
@@ -67,7 +67,7 @@ The client public key, which is embedded into the client certificate, is used la
 
 _Note: OpenSSL 3.2.0 has been used for following steps._
 
-1. As you are your own Certificate Authority (CA) you create first your CA key pair. Make sure this CA key is stored secure that it cannot be stolen.
+1. As you are your own Certificate Authority (CA) you create first your CA key pair. Make sure this CA key is stored at a secure place that it cannot be stolen.
 ```
 sudo openssl genrsa -out ca.key 2048
 ```
@@ -76,7 +76,7 @@ sudo openssl genrsa -out ca.key 2048
 sudo openssl req -new -x509 -days 15000 -key ca.key -out ca.crt
 ```
 3. Hand out the CA certificate to the `keyless server` and store it in the same folder as the Python script `KeylessServer.py`.
-4. Start the `keyless client` in FTP mode (jumper opened) and connect with a FTP server to it (IP adress is printed on the serial console) from the Certificate Authority (CA). Make sure that the client certificate (key.crt) and the client CSR (key.csr) are deleted from the client file-system.
+4. Start the `keyless client` in FTP mode (jumper opened) and connect with a FTP server to it (IP address is printed on the serial console) from the Certificate Authority (CA). Make sure that the client certificate (key.crt) and the client CSR (key.csr) are deleted from the client file-system.
 5. Start the `keyless client` in normal mode (jumper closed). A new client key pair is generated inside the Optiga Trust M and the client CSR is generated automatically and stored as the file key.csr in the client file-system. The form attributes of the CSR are hard coded inside the source code of the `keyless client` and need to be adapted by its owner.
 6. Start the `keyless client` in FTP mode (jumper opened) again and connect with a FTP server to it from the Certificate Authority (CA). Upload the client CSR (key.csr) to the Certificate Authority (CA).
 7. Now create from the client CSR (key.csr) the client certificate (key.crt) signed with the CA key. The valid period in the following example is 1 year. The options.ext file can be found [here](/CertificateAuthority/options.ext).
@@ -101,12 +101,12 @@ sudo openssl x509 -in key.crt -noout -text
 
 ## Keyless System
 
-The message exchange of the `Keyless System` is based on the Challenge Response Authentication mechanism.
+The message exchange of the `keyless system` is based on the Challenge Response Authentication mechanism.
 
-1. When the `Keyless Client` wakes up from deep sleep a request is sent to the `Keyless Server`. Along with the request the client certificate is sent for different kind of certificate verifications, e.g. chain of trust, time expiration, etc.
-2. The challenge is sent by the `Keyless Server` to the `Keyless Client` containing a nonce. In our case the nonce is the secure hash (SHA256) of the combination of a large random number and a sequence number. The sequence number is a monotonic up-counter, which makes it safe against replay attacks.
-3. The response is the RSASSA-PKCS1-v1.5 signature of the nonce calculated by `Keyless Client` and sent to the `Keyless Server`.
-4. The `Keyless Server` verifies the signature with the client public key (received with the ckient certificate) and on success the door is unlocked. The `Keyless Client` will be informed if access has been granted.
+1. When the `keyless client` wakes up from deep sleep a request is sent to the `keyless server`. Along with the request the client certificate is sent for different kind of certificate verifications, e.g. chain of trust, time expiration, etc.
+2. The challenge is sent by the `keyless server` to the `keyless client` containing a nonce. In our case the nonce is the secure hash (SHA-256) of the combination of a large random number and a sequence number. The sequence number is a monotonic up-counter, which makes it safe against replay attacks.
+3. The response is the RSASSA-PKCS1-v1.5 signature of the nonce calculated by `keyless client` and sent to the `keyless server`.
+4. The `keyless server` verifies the signature with the client public key (received with the client certificate) and on success the door is unlocked. The `keyless client` will be informed if access has been granted.
 
 <img src="/Diagrams/ChallengeResponseAuthentication.png" alt="Challenge Response Authentication" width="1024"/>
 
@@ -124,7 +124,7 @@ The message exchange of the `Keyless System` is based on the Challenge Response 
   * Wi-Fi settings
     * const char* ssid = "xxxxxxxxxx";
     * const char* password = "xxxxxxxxxx";
-  * `Keyless Server` settings
+  * `keyless server` settings
     * const char* servername = "192.168.1.9";
   * Client CSR/certificate settings
     * const char* countryName = "DE";
@@ -135,8 +135,8 @@ The message exchange of the `Keyless System` is based on the Challenge Response 
 
 ### Keyless Server
 
-* configure the same static IP address which has been configured in the `Keyless Client` as servername 
+* configure the same static IP address which has been configured in the `keyless client` as servername 
 * install Python 3.7.x or newer
 * install the OpenSSL wrapper "pyOpenSSL" 24.x.x or newer
-* the monotonic counter class is located in file [monotoniccounter.py](/KeylessServer/monotoniccounter.py). It will store the monotonic counter value in file [counter.txt](/KeylessServer/counter.txt).
+* the monotonic counter class is located in file [monotoniccounter.py](/KeylessServer/monotoniccounter.py). It will store and update the monotonic counter value in file [counter.txt](/KeylessServer/counter.txt).
 * the main functionality is located in file [KeylessServer.py](/KeylessServer/KeylessServer.py).
