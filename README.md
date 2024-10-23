@@ -79,7 +79,7 @@ sudo openssl req -new -x509 -days 15000 -key ca.key -out ca.crt
 4. Start the `keyless client` in FTP mode (jumper opened) and connect with a FTP server to it (IP adress is printed on the serial console) from the Certificate Authority (CA). Make sure that the client certificate (key.crt) and the client CSR (key.csr) are deleted from the client file-system.
 5. Start the `keyless client` in normal mode (jumper closed). A new client key pair is generated inside the Optiga Trust M and the client CSR is generated automatically and stored as the file key.csr in the client file-system. The form attributes of the CSR are hard coded inside the source code of the `keyless client` and need to be adapted by its owner.
 6. Start the `keyless client` in FTP mode (jumper opened) again and connect with a FTP server to it from the Certificate Authority (CA). Upload the client CSR (key.csr) to the Certificate Authority (CA).
-7. Now create from the client CSR (key.csr) the client certificate (key.crt) signed with the CA key. The valid period in the following example is 1 year. The options.ext file can be found [here](https://github.com/mkgeiger/secure-keyless-system/CertificateAuthority/options.ext).
+7. Now create from the client CSR (key.csr) the client certificate (key.crt) signed with the CA key. The valid period in the following example is 1 year. The options.ext file can be found [here](/CertificateAuthority/options.ext).
 ```
 sudo openssl x509 -req -inform der -in key.csr -CA ca.crt -CAkey ca.key -CAcreateserial -extfile options.ext -outform der -out key.crt -days 365
 ```
@@ -120,6 +120,23 @@ The message exchange of the `Keyless System` is based on the Challenge Response 
 * select board: NodeMCU 1.0 (ESP-12E Module)
 * select flash size with filesystem space: 4MB (FS:1MB or 2MB)
 * the CSR handling is located in files [csr.h](/KeylessClient/csr.h) and [csr.cpp](/KeylessClient/csr.cpp)
-* the main functionality is located in file [KeylessClient.ino](/KeylessClient/KeylessClient.ino)
+* the main functionality is located in file [KeylessClient.ino](/KeylessClient/KeylessClient.ino). Please adjust following parameters on the top of that file:
+  * Wi-Fi settings
+    * const char* ssid = "xxxxxxxxxx";
+    * const char* password = "xxxxxxxxxx";
+  * `Keyless Server` settings
+    * const char* servername = "192.168.1.9";
+  * Client CSR/certificate settings
+    * const char* countryName = "DE";
+    * const char* state = "BW";
+    * const char* locality = "Heimsheim";
+    * const char* organizationName = "Geiger";
+    * const char* commonName = "Key";
 
 ### Keyless Server
+
+* configure the same static IP address which has been configured in the `Keyless Client` as servername 
+* install Python 3.7.x or newer
+* install the OpenSSL wrapper "pyOpenSSL" 24.x.x or newer
+* the monotonic counter class is located in file [monotoniccounter.py](/KeylessServer/monotoniccounter.py). It will store the monotonic counter value in file [counter.txt](/KeylessServer/counter.txt).
+* the main functionality is located in file [KeylessServer.py](/KeylessServer/KeylessServer.py).
